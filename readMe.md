@@ -4,7 +4,7 @@ This is a project focused on understanding error propagation in atmospheric flow
 
 ## Project Overview
 
-This project investigates how errors propagate through simple simulation models that replicate multi-state atmospheric flows. The ultimate goal is to construct robust regime change detection schemes applicable to Earth systems models.
+We investigate how errors propagate through simple simulation models that replicate multi-state atmospheric flows. The ultimate goal is to construct robust regime change detection schemes applicable to Earth systems models.
 
 ## Objectives
 
