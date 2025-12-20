@@ -1,7 +1,7 @@
 """
 Lorenz63 Atmospheric Convection Model
 
-This file implements a numerical simulator for the Lorenz (1963) system of 
+Here we implement a numerical simulator for the Lorenz (1963) system of 
 ordinary differential equations (ODEs), which models atmospheric convection and exhibits 
 chaotic behavior.
 
@@ -15,7 +15,7 @@ Interpretation:
     - y: Horizontal temperature variation
     - z: Vertical temperature variation
 
-Lorenz's original values):
+Lorenz's original values:
     - sigma = 10    : Prandtl number
     - rho  = 28    : Rayleigh number
     - beta  = 8/3   : Geometric factor
@@ -40,6 +40,8 @@ import numpy as np
 
 
 def f(u, *, sigma, rho, beta) -> np.ndarray:
+    if beta<=0:
+        raise ValueError("Beta is assumed positive in the Lorenz system")
     """
     Compute the derivative of the Lorenz system state vector.
     
@@ -60,7 +62,7 @@ class LorenzSimulatorK4:
     """
     4th-order Runge-Kutta simulator for the Lorenz system.
     
-    This class implements a single time-step integration using the RK4 method, helps to generate iterative trajectory.
+    This class implements a single time-step integration using the RK4 method, helps to generate iterative trajectory. We also add functionality to compute the jacobian and find eigenvalues. 
     """
     
     def __init__(self, delta_T=0.01, *, sigma=10, rho=28, beta=8/3):
@@ -71,7 +73,47 @@ class LorenzSimulatorK4:
         self.sigma = sigma
         self.rho = rho
         self.beta = beta
+        self.origin = np.zeros(3)
+        self.c_plus = None
+        self.c_minus = None
     
+    def jacobian(self, u):
+        """
+        The jacobian is given by:
+        J = [[-sigma,  sigma,  0 ],
+             [rho - z, -1,    -x ],
+             [y,       x,     -beta]]
+        """
+        x, y, z = u
+        return np.array([
+            [-self.sigma, self.sigma, 0],
+            [self.rho - z, -1, -x],
+            [y, x, -self.beta]
+        ])
+
+    def fixed_points(self):
+        """
+        Returns the fixed points of the system based on rho.
+        """
+        self.origin = np.zeros(3)
+        if self.rho <= 1:
+            return np.array([self.origin])
+        else:
+            # Coordinates for C+ and C-
+            const = np.sqrt(self.beta * (self.rho - 1))
+            self.c_plus = np.array([const, const, self.rho - 1])
+            self.c_minus = np.array([-const, -const, self.rho - 1])
+            return np.array([self.origin, self.c_plus, self.c_minus])
+
+    def jacobian_evalues(self, u):
+        """
+        Returns the eigenvalues of the Jacobian at state u.
+        """
+        jac = self.jacobian(u)
+        eigenvalues, _ = np.linalg.eig(jac)
+        return eigenvalues
+
+
     def __call__(self, u_previous) -> np.ndarray:
         """
         Advance the system by one time step using RK4.

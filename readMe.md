@@ -9,7 +9,7 @@ We investigate how errors propagate through simple simulation models that replic
 ## Objectives
 
 1. **Error Propagation Analysis**: Study how computational and modeling errors propagate through dynamical systems that exhibit multi-state atmospheric behavior.
-2. **Regime Change Detection**: Develop and validate detection schemes that can identify transitions between different atmospheric states.
+2. **Regime Change Detection**: Develop and validate detection schemes that can identify transitions between 'different' atmospheric states.
 3. **Neural Emulator Development**: Build and evaluate neural network-based emulators for atmospheric models
 
 ## Current Focus

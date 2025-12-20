@@ -107,7 +107,52 @@ class LorenzSimulatorK4:
         self.sigma = sigma
         self.rho = rho
         self.beta = beta
+        self.origin = jnp.zeros(3)
+        self.c_plus = None
+        self.c_minus = None
     
+    def jacobian(self, u):
+        """
+        The jacobian is given by:
+        J = [[-sigma,  sigma,  0 ],
+             [rho - z, -1,    -x ],
+             [y,       x,     -beta]]
+        """
+        x, y, z = u
+        return jnp.array([
+            [-self.sigma, self.sigma, 0],
+            [self.rho - z, -1, -x],
+            [y, x, -self.beta]
+        ])
+
+    def jacobian_auto(self, u):
+        # Using JAX to differentiate the function
+        f_partial = lambda u: f(u, sigma=self.sigma, rho=self.rho, beta=self.beta)
+        return jax.jacfwd(f_partial)(u)
+
+    def fixed_points(self):
+        """
+        Returns the fixed points of the system based on rho.
+        """
+        self.origin = jnp.zeros(3)
+        if self.rho < 1:
+            return jnp.array([self.origin])
+        else:
+            # Coordinates for C+ and C-
+            const = jnp.sqrt(self.beta * (self.rho - 1))
+            self.c_plus = jnp.array([const, const, self.rho - 1])
+            self.c_minus = jnp.array([-const, -const, self.rho - 1])
+            return jnp.array([self.origin, self.c_plus, self.c_minus])
+
+    def jacobian_evalues(self, u):
+        """
+        Returns the eigenvalues of the Jacobian at state u.
+        """
+        jac = self.jacobian(u)
+        eigenvalues, _ = jnp.linalg.eig(jac)
+        return eigenvalues
+
+
     def __call__(self, u_previous) -> jnp.ndarray:
         """
         Advance the system by one time step using RK4.

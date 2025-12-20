@@ -1,4 +1,5 @@
 /.vscode
+!/.vscode/extensions.json
 /__pycache__
 /.venv
 /Study/__pycache__
