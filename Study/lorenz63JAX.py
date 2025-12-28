@@ -195,36 +195,21 @@ def main():
     rollout_func = rollout(lorenzStepper, iterations, include_init=True)
     trajectory = rollout_func(u_0)
     
-    # Create 3D visualization
-    fig, ax = plt.subplots(
-        subplot_kw={"projection": "3d"},
-        figsize=(7, 7)
-    )
+    # Create 3x1 vertical visualization
+    fig, axes = plt.subplots(3, 1, figsize=(15, 4), sharex=True)
+    labels = ["x", "y", "z"]
+    colors = ["royalblue", "forestgreen", "crimson"]
     
-    # Plot the chaotic attractor trajectory
-    ax.plot(
-        trajectory[:, 0],
-        trajectory[:, 1],
-        trajectory[:, 2],
-        lw = 1.0,
-        color = "blue",
-        label = "Trajectory"
-    )
-    
-    ax.scatter3D(
-        trajectory[0, 0],
-        trajectory[0, 1],
-        trajectory[0, 2],
-        color = "red",
-        label = "Starting point"
-    )
-    
-    ax.set_xlabel("x")
-    ax.set_ylabel("y")
-    ax.set_zlabel("z")
-    
-    ax.set_title("Lorenz Attractor (σ=10, ρ=28, β=8/3)")
-    plt.legend()
+    time = jnp.arange(len(trajectory)) * lorenzStepper.dt
+
+    for i in range(3):
+        axes[i].plot(time, trajectory[:, i], lw=1.0, color=colors[i])
+        axes[i].set_title(f"{labels[i]} Trajectory")
+        axes[i].set_xlabel("Time")
+        axes[i].set_ylabel(labels[i])
+        axes[i].grid(True, linestyle="--", alpha=0.6)
+
+    plt.tight_layout()
     plt.show()
 
 

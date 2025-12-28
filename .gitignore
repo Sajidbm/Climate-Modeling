@@ -3,3 +3,6 @@
 /__pycache__
 /.venv
 /Study/__pycache__
+/graphcast_repo
+/Study/shallow_water_sim.py
+/Study/shallow_water_derivation.md
