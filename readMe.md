@@ -23,7 +23,7 @@ I am currently exploring neural emulators for toy atmospheric models, starting w
 
 ## Planned Progression
 
-1. **Phase 1** (Current): Lorenz 63 system - Understanding chaotic dynamics and neural emulation.
+1. **Phase 1** (Current): Lorenz 63 system - Understanding chaotic dynamics and neural emulation, Kuramoto Sivashinski Equations – understanding spatio-temporal chaos. 
 2. **Phase 2**: Lorenz 96 model - Multi-scale atmospheric processes.
 3. **Phase 3**: Shallow water equations - More realistic atmospheric flow dynamics.
 
